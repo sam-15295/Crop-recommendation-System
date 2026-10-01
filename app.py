@@ -12,25 +12,49 @@ st.set_page_config(
 )
 
 
+FEATURES = ["N", "P", "K", "temperature", "humidity", "ph", "rainfall"]
+
+MODEL_NAMES = {
+    "RandomForestClassifier": "Random Forest",
+    "SVC": "Support Vector Machine",
+    "KNeighborsClassifier": "K-Nearest Neighbours",
+    "DecisionTreeClassifier": "Decision Tree",
+}
+
+
+# Artifacts saved by Smart_Crop_Recommendation.ipynb (section 2.5)
 @st.cache_resource
 def load_model():
-    model = joblib.load("crop_recommendation_ensemble_model.pkl")
-    label_encoder = joblib.load("crop_recommendation_label_encoder.pkl")
-    return model, label_encoder
+    model = joblib.load("best_model.pkl")
+    scaler = joblib.load("scaler.pkl")
+    label_encoder = joblib.load("label_encoder.pkl")
+    cap_bounds = joblib.load("cap_bounds.pkl")
+    return model, scaler, label_encoder, cap_bounds
 
 
-model, label_encoder = load_model()
+model, scaler, label_encoder, cap_bounds = load_model()
+
+model_name = MODEL_NAMES.get(type(model).__name__, type(model).__name__)
+
+
+def preprocess(raw_df):
+    # Same steps as training: IQR capping, then standard scaling
+    capped = raw_df.copy()
+    for feature in FEATURES:
+        low, high = cap_bounds[feature]
+        capped[feature] = capped[feature].clip(low, high)
+    return scaler.transform(capped[FEATURES])
 
 
 st.title("🌱 Crop Recommendation System")
 
 st.markdown(
-    """
+    f"""
     ### Smart Agriculture Using Machine Learning
 
     This application recommends the most suitable crop based on
-    **soil nutrients and environmental conditions** using an
-    **Ensemble Machine Learning Model**.
+    **soil nutrients and environmental conditions** using the
+    best-performing model from our comparison: **{model_name}**.
     """
 )
 
@@ -125,18 +149,12 @@ if predict_button:
             ph,
             rainfall
         ]],
-        columns=[
-            "N",
-            "P",
-            "K",
-            "temperature",
-            "humidity",
-            "ph",
-            "rainfall"
-        ]
+        columns=FEATURES
     )
 
-    prediction = model.predict(input_data)
+    model_input = preprocess(input_data)
+
+    prediction = model.predict(model_input)
 
     predicted_class = prediction[0]
 
@@ -144,7 +162,7 @@ if predict_button:
         [predicted_class]
     )[0]
 
-    probabilities = model.predict_proba(input_data)[0]
+    probabilities = model.predict_proba(model_input)[0]
 
     class_names = label_encoder.classes_
 
@@ -258,7 +276,7 @@ st.divider()
 
 st.caption(
     "🌱 Crop Recommendation System | "
-    "Powered by Ensemble Machine Learning"
+    f"Powered by {model_name}"
 )
 
 
