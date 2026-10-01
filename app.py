@@ -133,7 +133,7 @@ st.divider()
 predict_button = st.button(
     "🔍 Recommend Crop",
     type="primary",
-    use_container_width=True
+    width="stretch"
 )
 
 
@@ -215,7 +215,7 @@ if predict_button:
 
     st.dataframe(
         top_3,
-        use_container_width=True,
+        width="stretch",
         hide_index=True
     )
 
@@ -267,7 +267,7 @@ if predict_button:
 
     st.dataframe(
         input_display,
-        use_container_width=True,
+        width="stretch",
         hide_index=True
     )
 
