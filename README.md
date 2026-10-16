@@ -80,7 +80,8 @@ Crop-recommendation-System/
 ├── scaler.pkl                        # StandardScaler fitted on the training features
 ├── label_encoder.pkl                 # Label encoder (class index ↔ crop name)
 ├── cap_bounds.pkl                    # IQR capping bounds for each feature
-├── requirements.txt                  # Python dependencies
+├── requirements.txt                  # Python dependencies for the app
+├── requirements-notebook.txt         # Extra packages for running the notebook
 ├── render.yaml                       # Render deployment blueprint
 └── README.md
 ```
@@ -124,11 +125,25 @@ The app opens in your browser at `http://localhost:8501`.
 
 ### Run the notebook
 
-Open `Smart_Crop_Recommendation.ipynb` in Jupyter or Google Colab and run all cells from top to bottom. Running it again rebuilds `best_model.pkl`, `scaler.pkl`, `label_encoder.pkl` and `cap_bounds.pkl`, so the app always uses whichever model performs best. The notebook also needs `matplotlib`, `seaborn` and `kagglehub`:
+Open `Smart_Crop_Recommendation.ipynb` in Jupyter or Google Colab and run all cells from top to bottom. Install the notebook packages first. This includes the same pinned scikit-learn version that the app uses:
 
 ```bash
-pip install matplotlib seaborn kagglehub jupyter
+pip install -r requirements-notebook.txt
 ```
+
+### Retraining with a new or updated dataset
+
+1. Put your CSV in the project folder as **`Crop_recommendation.csv`**. It needs the same columns: `N, P, K, temperature, humidity, ph, rainfall, label`. If this file is present, the notebook uses it instead of downloading from Kaggle.
+2. Run all cells of the notebook. It compares the four models again and saves the best one (`best_model.pkl`, `scaler.pkl`, `label_encoder.pkl`, `cap_bounds.pkl`). New or removed crops are picked up automatically.
+3. Commit and push the dataset, the notebook and the four `.pkl` files:
+   ```bash
+   git add Crop_recommendation.csv Smart_Crop_Recommendation.ipynb *.pkl
+   git commit -m "Retrain model on updated dataset"
+   git push
+   ```
+4. Render redeploys the app automatically with the new model.
+
+> The notebook only saves the model files when scikit-learn **1.6.1** is installed, the version Render uses. With any other version it prints **NOT SAVED** and tells you how to fix it.
 
 ---
 

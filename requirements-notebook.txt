@@ -1,0 +1,6 @@
+# Packages for running Smart_Crop_Recommendation.ipynb (retraining the model)
+-r requirements.txt
+matplotlib
+seaborn
+kagglehub
+jupyter
