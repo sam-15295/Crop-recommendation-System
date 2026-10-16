@@ -81,6 +81,7 @@ Crop-recommendation-System/
 ├── label_encoder.pkl                 # Label encoder (class index ↔ crop name)
 ├── cap_bounds.pkl                    # IQR capping bounds for each feature
 ├── requirements.txt                  # Python dependencies
+├── render.yaml                       # Render deployment blueprint
 └── README.md
 ```
 
@@ -128,6 +129,21 @@ Open `Smart_Crop_Recommendation.ipynb` in Jupyter or Google Colab and run all ce
 ```bash
 pip install matplotlib seaborn kagglehub jupyter
 ```
+
+---
+
+## ☁️ Deployment (Render)
+
+The repository includes a [`render.yaml`](render.yaml) blueprint, so you can deploy it on [Render](https://render.com) as a free web service:
+
+1. Sign in to Render with GitHub and open **New → Blueprint**.
+2. Select the `Crop-recommendation-System` repository and click **Apply**.
+3. Render installs `requirements.txt` on Python 3.12 and starts the app with:
+   ```bash
+   streamlit run app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true
+   ```
+
+Every push to `main` triggers a new deploy automatically. On the free plan the service sleeps after about 15 minutes without traffic, so the first request after that takes up to a minute to wake it up.
 
 ---
 
