@@ -87,14 +87,6 @@ def crop_emoji(crop):
     return CROPS.get(crop, (crop.title(), "🌱"))[1]
 
 
-def confidence_level(confidence):
-    if confidence >= 0.8:
-        return "High"
-    if confidence >= 0.5:
-        return "Medium"
-    return "Low"
-
-
 st.markdown(
     """
     <style>
@@ -347,8 +339,6 @@ with result_col:
 
         confidence = probability_df.iloc[0]["Probability"]
 
-        level = confidence_level(confidence)
-
         st.markdown(
             f"""
             <div class="result-card">
@@ -357,20 +347,13 @@ with result_col:
                     <div class="result-label">Recommended crop</div>
                     <div class="result-crop">{crop_name(predicted_crop)}</div>
                     <span class="result-pill">
-                        {level} confidence · {confidence * 100:.1f}%
+                        Confidence · {confidence * 100:.1f}%
                     </span>
                 </div>
             </div>
             """,
             unsafe_allow_html=True
         )
-
-        if level == "Low":
-            st.warning(
-                "**Low confidence.** These conditions don't closely match "
-                "any crop in the training data. Double-check your values "
-                "and consider the alternatives below."
-            )
 
         st.markdown("**🏆 Top 3 crops**")
 
