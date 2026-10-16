@@ -10,11 +10,12 @@ A machine learning web app that recommends the most suitable crop to grow from *
 
 ## ✨ Features
 
-- **Interactive web interface** built with Streamlit
-- **Recommended crop** with a confidence percentage
-- **Top 3 crop recommendations** ranked by probability
-- **Probability chart** for all supported crops
-- **Input summary** table with units
+- **Clean, responsive interface** built with Streamlit, with light and dark mode and mobile support
+- **One-click examples**: load real soil profiles from the test set (rice, cotton, maize, chickpea, apple, coffee)
+- **Recommended crop** with a confidence level (High / Medium / Low)
+- **Low-confidence warning** when the conditions don't match any crop well
+- **Top 3 crops** ranked by probability
+- **Interactive probability chart** and an input summary table
 - **Best-model deployment**: the app serves the top classifier from the notebook's 4-model comparison
 - **Consistent preprocessing**: inputs go through the same IQR capping and scaling as the training data
 
@@ -83,6 +84,7 @@ Crop-recommendation-System/
 ├── requirements.txt                  # Python dependencies for the app
 ├── requirements-notebook.txt         # Extra packages for running the notebook
 ├── render.yaml                       # Render deployment blueprint
+├── .streamlit/config.toml            # App theme (light & dark)
 └── README.md
 ```
 
